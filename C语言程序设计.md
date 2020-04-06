@@ -1,7 +1,3 @@
-
-
-
-
 # C语言程序设计
 
 
@@ -98,7 +94,7 @@ double——双精度浮点数
 
 ```c
 double a, b;
-scanf("%lf %lf", &a, &b);//注意是%lf表示double
+scanf("%lf %lf", &a, &b);//注意输入的时候是%lf表示double
 printf("%f", (a+b));
 ```
 
@@ -430,3 +426,949 @@ switch(type){
 ### 8.成绩转换
 
 只看分数的十位，score%10结合switch-case
+
+
+
+## 第四周：循环
+
+### 1.while循环
+
+###### 如何计算数的位数
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char const *argv[])
+{
+	int x;
+	int n=0;
+	scanf("%d", &x);
+	n++;
+	x /= 10;
+	while(x > 0)
+	{
+		n++;
+		x/10;
+	}
+	printf("%d\n", n);
+	return 0;
+}
+```
+
+当输入0的时候，输出的值也为1
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char const *argv[])
+{
+	int x;
+	int n=0;
+	scanf("%d", &x);
+	while(x > 0)
+	{
+		n++;
+		x/10;
+	}
+	printf("%d\n", n);
+	return 0;
+}
+```
+
+当输入0的时候，输出的值也为0
+
+### 2.do-while循环
+
+在进入循环体的时候不做检查，而是在执行完一轮循环体的代码之后，再检查循环的条件是否满足，如果满足则继续下一轮，否则结束循环
+
+###### 如何计算数的位数
+
+```c
+do
+{
+    <循环体>
+}while(<循环条件>);//分号(;)莫忘
+```
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char const *argv[])
+{
+	int x;
+	int n=0;
+	scanf("%d", &x);
+	do
+	{
+		n++;
+		x/10;
+	}while(x > 0);//分号(;)莫忘
+	printf("%d\n", n);
+	return 0;
+}
+```
+
+当输入0的时候，输出的值也为1
+
+###### 计算log2x
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(int argc, char const *argv[])
+{
+	int x;
+	int ret=0;
+
+	x = 128;
+	int t=x;
+	while(x > 1)//x > 2^0 也可以写为x >= 2，无论如何得把2的一次幂包含进去
+	{
+		x /= 2;
+		ret++;
+	}
+	printf("log2 of %d is %d\n", t, ret);
+	return 0;
+}
+```
+
+###### 反转
+
+```c
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+	int x;
+	scanf("%d", &x);
+	int digit;
+	int ret=0;
+
+	while(x > 0)
+	{
+		digit = x%10;
+		ret = ret*10 + digit;//妙啊
+		x /= 10;
+	}
+	printf("%d\n", ret);
+	return 0;
+}
+```
+
+## 第五周：循环控制
+
+### 1.阶乘
+
+```c
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+	int n;
+	scanf("%d", &n);
+	int factor = 1;
+	int i = n;
+
+	while(n>1)
+	{
+		factor *= n;
+		n--;
+	}
+	printf("%d! = %d\n", i, factor);
+	return 0;
+}
+```
+
+```c
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+	int n;
+	scanf("%d", &n);
+	int factor = 1;
+
+	for(int i=2; i<=n;i++)//attention here
+	{
+		factor *= i;
+	}
+
+	printf("%d! = %d\n", n, factor);
+	return 0;
+}
+```
+
+```c
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+	int n;
+	scanf("%d", &n);
+	int factor = 1;
+	int i = n;
+
+	for(n=n; n>1; n--)//attention here
+	{
+		factor *= n;
+	}
+
+	printf("%d! = %d\n", i, factor);
+	return 0;
+}
+```
+
+```c
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+	int n;
+	scanf("%d", &n);
+	int factor = 1;
+	int i = n;
+
+	for(; n>1; n--)//attention here
+	{
+		factor *= n;
+	}
+
+	printf("%d! = %d\n", i, factor);
+	return 0;
+}
+```
+
+### 2.for循环
+
+```c
+for(初始条件;条件;每轮的动作)
+{
+    <循环体>;
+}
+```
+
+for中的每一个表达式都是可以省略的
+
+```c
+for(;条件;) == while(条件)
+```
+
+### 3.tips for loops
+
+|     要求     |   循环   |
+| :----------: | :------: |
+|   固定次数   |   for    |
+| 必须执行一次 | do-while |
+|   其他情况   |  while   |
+
+### 4.examples
+
+#### 凑硬币1
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int x;
+	int one, two, five;
+	
+	scanf("%d", &x);
+	for ( one = 1; one < x*10; one++ )
+    {
+		for ( two = 1; two < x*10/2; two++ ) 
+        {
+			for ( five = 1; five < x*10/5; five++ ) 
+            {
+				if ( one + two*2 + five*5 == x*10 ) 
+                {
+					printf("可以用%d个1角加%d个2角加%d个5角得到%d元\n", 
+						one, two, five, x);
+					break;
+				}
+			}
+		}
+	}
+	
+	return 0;
+}
+```
+
+#### 凑硬币2
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int x;
+	int one, two, five;
+	int exit = 0;
+	
+	scanf("%d", &x);
+	for ( one = 1; one < x*10; one++ )
+    {
+		for ( two = 1; two < x*10/2; two++ ) 
+        {
+			for ( five = 1; five < x*10/5; five++ ) 
+            {
+				if ( one + two*2 + five*5 == x*10 ) 
+                {
+					printf("可以用%d个1角加%d个2角加%d个5角得到%d元\n", 
+						one, two, five, x);
+					exit = 1;
+					break;
+				}
+			}
+			if ( exit == 1 ) break;
+		}
+		if ( exit == 1 ) break;
+	}
+	
+	return 0;
+}
+```
+
+#### 凑硬币3
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int x;
+	int one, two, five;
+	
+	scanf("%d", &x);
+	for ( one = 1; one < x*10; one++ ) 
+    {
+		for ( two = 1; two < x*10/2; two++ ) 
+        {
+			for ( five = 1; five < x*10/5; five++ ) 
+            {
+				if ( one + two*2 + five*5 == x*10 ) 
+                {
+					printf("可以用%d个1角加%d个2角加%d个5角得到%d元\n", 
+						one, two, five, x);
+					goto out;//out为标志，使用goto直接跳到out
+				}
+			}
+		}
+	}
+out://标志
+	return 0;
+}
+```
+
+#### 判断一个数是否是素数
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int x;
+
+	scanf("%d", &x);
+	
+	int i;
+	int isPrime = 1;	//	x是素数
+	for ( i=2; i<x; i++ ) 
+    {
+		if ( x % i == 0 ) 
+        {
+			isPrime = 0;
+			break;
+		}
+	}
+	if ( isPrime == 1 ) 
+    {
+		printf("是素数\n");
+	} 
+    else 
+    {
+		printf("不是素数\n");
+	}
+	return 0;
+}
+```
+
+#### 找出100以内的所有的素数
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int x;
+	
+	for ( x=1; x<=100; x++ ) 
+    {
+		int i;
+		int isPrime = 1;	//	x是素数
+		for ( i=2; i<x; i++ ) 
+        {
+			if ( x % i == 0 ) 
+            {
+				isPrime = 0;
+				break;
+			}
+		}
+		if ( isPrime == 1 ) 
+        {
+			printf("%d ", x);
+		} 
+	}
+	printf("\n");
+	return 0;
+}
+```
+
+#### 找出前50个素数
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int x;
+	int cnt = 0;
+
+	x = 1;
+	while ( cnt <50 ) 
+    {
+		int i;
+		int isPrime = 1;	//	x是素数
+		for ( i=2; i<x; i++ ) 
+        {
+			if ( x % i == 0 ) 
+            {
+				isPrime = 0;
+				break;
+			}
+		}
+		if ( isPrime == 1 ) 
+        {
+			cnt ++;
+			printf("%d\t", x);
+			if ( cnt %5 == 0 )
+            {
+				printf("\n");
+			}
+		} 
+		x++;
+	}
+	return 0;
+}
+```
+
+
+
+### 5.break vs continue
+
+|   语句   |                     作用                     |
+| :------: | :------------------------------------------: |
+|  break   |                   跳出循环                   |
+| continue | 跳出这一轮，剩下语句不会执行，直接进入下一轮 |
+
+### 6.正向分解整数
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int x;
+	scanf("%d", &x);
+
+	int mask = 1;
+	int t = x;
+	while ( t>9 ) 
+    {
+		t /= 10;
+		mask *=10;
+	} 
+	printf("x=%d, mask=%d\n", x, mask);
+	do {
+		int d = x / mask;
+		printf("%d", d);
+		if ( mask > 9 ) 
+        {
+			printf(" ");
+		}
+		x %= mask;
+		mask /= 10;
+	} while ( mask > 0 );
+	printf("\n");
+
+	return 0;
+}
+```
+
+### 7.求最大公约数
+
+#### 枚举法
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int a,b;
+	int min;
+	
+	scanf("%d %d", &a, &b);
+	if ( a<b ) 
+    {
+		min = a;
+	} else 
+    {
+		min = b;
+	}
+	int ret = 0;
+	int i;
+	for ( i = 1; i < min; i++ ) 
+    {
+		if ( a%i == 0 ) 
+        {
+			if ( b%i == 0 ) 
+            {
+				ret = i;
+			}
+		}
+	}
+	printf("%d和%d的最大公约数是%d.\n", a, b, ret);
+	
+	return 0;
+}
+```
+
+#### 辗转相除法
+
+```c
+#include <stdio.h>
+
+int main()
+{
+	int a,b;
+	int t;
+	
+	scanf("%d %d", &a, &b);
+	int origa = a;
+	int origb = b;
+	while ( b != 0 ) 
+    {
+		t = a%b;
+		a = b;
+		b = t;
+	}
+	printf("%d和%d的最大公约数是%d.\n", origa, origb, a);
+	
+	return 0;
+}
+```
+
+计算过程
+
+|   a   |   b   |  t   |
+| :---: | :---: | :--: |
+|  12   |  18   |  12  |
+|  18   |  12   |  6   |
+|  12   |   6   |  0   |
+| **6** | **0** |      |
+
+当**b=0**时，最大公约数就是**a**
+
+### 8.水仙花数
+
+三位数153 = 1^3^ + 5^3^ + 3^3^
+
+```c
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+	int n;
+	scanf("%d", &n);
+	int first = 1;
+	int i = 1;
+	while(i < n)
+	{
+		first *= 10;
+		i++;
+	}
+	i = first;
+	while(i < first*10)
+	{
+		int t = i;
+		int sum = 0;
+		do
+		{
+			int d = t%10;
+			t /= 10;
+			int p = d;
+			int j = 1;
+			while(j < n)
+			{
+				p *= d;
+				j++;
+			}
+		}while(t > 0)
+		i++;
+	}
+	return 0;
+}
+```
+
+
+
+## 第六周：数据类型
+
+### 1.c语言中的类型
+
+|    类型    |                                   |
+| :--------: | :-------------------------------: |
+|    整数    | char、short、int、long、long long |
+|   浮点数   |    float、double、long double     |
+|    逻辑    |     bool(可以合并到整数里面)      |
+|    指针    |                                   |
+| 自定义类型 |                                   |
+
+#### 类型的不同点
+
+|       不同点       |                             |
+| :----------------: | :-------------------------: |
+|    输入输出格式    |        %d、%ld、%lf         |
+|    表达数的范围    | char<short<int<float<double |
+| 内存中所占据的大小 |      1个字节到16个字节      |
+|  内存中的表达形式  |    二进制数(补码)、编码     |
+
+#### sizeof()
+
+给出某个类型或变量在内存中所占据的字节数
+
+```c
+sizeof(int);
+sizeof(i);
+```
+
+静态运算符，不要在sizeof的括号里做运算，这些运算不会做的
+
+```c
+int a;
+sizeof(a);//4
+sizeof(a++);//4
+sizeof(a+1.0);//8-double类型
+```
+
+### 2.整数
+
+|     类型      |                         大小                         |    表示范围    |
+| :-----------: | :--------------------------------------------------: | :------------: |
+|     char      |                    1字节（8比特）                    |    -128~127    |
+| unsigned char |                    1字节（8比特）                    |     0~255      |
+|     short     |                        2字节                         |  -32768~32767  |
+|      int      | 取决于CPU，通常为**1个字**——总线宽度（32bit、64bit） | -2^32^~2^32^-1 |
+|     long      | 取决于CPU，通常为**1个字**——总线宽度（32bit、64bit） | -2^32^~2^32^-1 |
+|   long long   |                        8字节                         | -2^64^~2^64^-1 |
+
+### 3.整数的内部表达
+
+#### 如何表示负数
+
+**-a**，其**补码**就是**0-a**, 实际是**2^n^-a**，n是这种类型的位数
+
+#### 补码的意义
+
+拿补码和原码可以加出一个溢出的“0”
+
+正数的原码、反码及补码都相同
+
+负数的反码等于其绝对值除符号位按位取反，补码在反码的基础上+1
+
+举例
+
+| 十进制 |   原码    |   反码    |   补码    |
+| :----: | :-------: | :-------: | :-------: |
+|   +3   | 0000 0011 | 0000 0011 | 0000 0011 |
+|   -3   | 1000 0011 | 1111 1100 | 1111 1101 |
+
+(+3)~补~+(-3)~补~=0000 0011 + 1111 1101 = **1** 0000 0000，最高位1溢出，得到结果为0000 0000，转换为十进制为0
+
+### 4.整数的范围
+
+对于一个字节（8位），表达范围0000 0000——1111 1111
+
+|       二进制        | 十进制  |
+| :-----------------: | :-----: |
+|      0000 0000      |    0    |
+| 1111 1111~1000 0000 | -1~-128 |
+| 0000 0001~0111 1111 |  1~127  |
+
+```c
+char c=127;//0111 1111
+c += 1;
+printf("c=%d", c);//1000 0000
+//output: c=-128
+```
+
+```c
+char c=-128;//1000 0000
+c -= 1;
+printf("c=%d", c);//0111 1111
+//output: c=127
+```
+
+
+
+```
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+	char c = 255;
+	int i = 255;
+	printf("c=%d, i=%d\n", c, i);
+	return 0;
+}
+```
+
+输出结果
+
+```c
+c=-1, i=255
+//实际上c为1111 1111
+//i为00000000 00000000 00000000 11111111
+```
+
+### 5.unsigned
+
+做**纯二进制运算**，主要是为了**移位**
+
+```c
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+	unsigned char c = 255;//attention here
+	int i = 255;
+	printf("c=%d, i=%d\n", c, i);
+	return 0;
+}
+```
+
+输出结果
+
+```c
+c=255, i=255
+```
+
+### 6.整数的输入输出
+
+只有两种形式int、long long
+
+|      |        类型        |
+| :--: | :----------------: |
+|  %d  |  char、short、int  |
+|  %u  |      unsigned      |
+| %ld  |     long long      |
+| %lu  | unsigned long long |
+
+### 7.八进制和十六进制
+
+|   进制   |      |
+| :------: | :--: |
+|  八进制  |  %o  |
+| 十六进制 |  %x  |
+
+### 8.选择整数类型
+
+没有特殊要求，就选择**int**
+
+### 9.浮点类型
+
+|  类型  |   字长    |                       范围                       | 有效数字 |
+| :----: | :-------: | :----------------------------------------------: | :------: |
+| float  | 32(4字节) |  正负(1.20x10^-38^~3.40x10^38^)，0,正负inf, nan  |    7     |
+| double | 64(8字节) | 正负(1.20x10^-308^~3.40x10^308^)，0,正负inf, nan |    15    |
+
+### 10.浮点的输入输出
+
+|  类型  | scanf |       printf        |
+| :----: | :---: | :-----------------: |
+| float  |  %f   | %f, %e(E)科学计数法 |
+| double |  %lf  | %f, %e(E)科学计数法 |
+
+保留指定位数的小数点
+
+```c
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+	double ff = 1E-10;
+	printf("%E, %.16f\n", ff, ff);//attention here
+	return 0;
+}
+```
+
+输出
+
+```c
+1.000000E-010, 0.0000000001000000
+```
+
+### 11.超出范围的浮点数
+
+| printf |      表示      |
+| :----: | :------------: |
+|  inf   |    正负无穷    |
+|  nan   | 不存在的浮点数 |
+
+### 12.浮点运算的精度
+
+带小数点的字面量是double而非float
+
+float需要**f**或者**F**后缀来表明身份
+
+判断浮点数是否相等一般使用
+
+```c
+float a, b;
+a = 1.345f;
+b = 1.123f;
+
+float f1, f2;
+fabs(f1-f2) < 1e-12;
+```
+
+### 13.选择浮点类型
+
+没有特殊要求，只使用double
+
+### 14.字符类型
+
+char是一种**整数**，也是一种特殊的类型：**字符**
+
+用单引号表示字符字面量：'**a**', **'1'**
+
+**''**也是一个字符
+
+printf和scanf里用%c来输入输出字符
+
+```c
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+	char c, d;
+	c = 1;
+	d = '1';
+	printf("c=%d\n", c);
+	printf("d=%d\n", d);
+	printf("d=%c\n", d);
+	return 0;
+}
+```
+
+```
+c=1
+d=49//1的ASCII码
+d=1
+```
+
+```c
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+	char c;
+	c = 'A';
+	c++;
+	printf("%c\n", c);
+	return 0;
+}
+```
+
+```
+B
+```
+
+### 15.自动类型转换
+
+当运算符的两边出现不一致的类型时，会自动转换为较大的类型，从而表示数的范围也变大
+
+**char->short->int->long->long long**
+
+**int->float->double**
+
+### 16.强制类型转换
+
+把一个量强制转换为另一个类型（通常是较小的类型）
+
+```c
+(类型)值；
+```
+
+such as 
+
+```c
+(int)10.2;
+(short)32;
+(double)10;
+```
+
+强制类型转换的优先级高于四则运算
+
+### 17.bool
+
+```c
+#include <stdbool.g>
+bool flag;
+```
+
+### 18.逻辑运算
+
+对逻辑量进行运算，结果只有0和1
+
+| 运算符 |  描述  |  示例  | 结果 |
+| :----: | :----: | :----: | :--: |
+|   ！   |   非   |   !a   | 取反 |
+|   &&   | 逻辑与 |  a&&b  |      |
+|  \|\|  | 逻辑或 | a\|\|b |      |
+
+#### 优先级
+
+**!>&&>||**
+
+| 优先级 |         运算符          |  结合性  |
+| :----: | :---------------------: | :------: |
+|   1    |          （）           | 从左到右 |
+|   2    | ! +(单目) -(单目) ++ -- | 从右到左 |
+|   3    |          * / %          | 从左到右 |
+|   4    |           + -           | 从左到右 |
+|   5    |        < <= > >=        | 从左到右 |
+|   6    |          == !=          | 从左到右 |
+|   7    |           &&            | 从左到右 |
+|   8    |          \|\|           | 从左到右 |
+|   9    |    == += -= *= /= %=    | 从右到左 |
+
+### 19.条件运算符
+
+**a = x < y ? x : y;**
+
+自右向左结合
+
+### 20.逗号运算
+
+优先级比赋值还低.......主要在for循环中使用
+
+```c
+int i;
+i = (3+4, 5+6);//i = 11
+```
+
