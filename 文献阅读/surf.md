@@ -1,12 +1,6 @@
-原文链接
+　　在上篇博客[特征点检测学习_1(sift算法)](http://www.cnblogs.com/tornadomeet/archive/2012/08/16/2643168.html) 中简单介绍了经典的sift算法，sift算法比较稳定，检测到的特征点也比较多，其最大的确定是计算复杂度较高。后面有不少学者对其进行了改进，其中比较出名的就是本文要介绍的surf算法，surf的中文意思为快速鲁棒特征。本文不是专门介绍surf所有理论（最好的理论是作者的论文）的，只是对surf算法进行了下整理，方便以后查阅。
 
-https://www.cnblogs.com/tornadomeet/archive/2012/08/17/2644903.html
-
-
-
-
-
-网上有些文章对surf做了介绍，比如：
+　　网上有些文章对surf做了介绍，比如：
 
 　　http://wuzizhang.blog.163.com/blog/static/78001208201138102648854/
 
@@ -20,63 +14,39 @@ https://www.cnblogs.com/tornadomeet/archive/2012/08/17/2644903.html
 
 　　这篇文章名字叫做《surf原文翻译》，写得非常好，看完会对surf中采用的一些技术更加深入的理解，不过本文却不是翻译英文的，而是该作者自己的理解，对积分图，Hessian矩阵等引入的原因都做了通俗的解释，推荐一看。
 
-
-
- 即每一个像素点都可以求出一个Hessian矩阵。但是由于我们的特征点需要具备尺度无关性，所以在进行Hessian矩阵构造前，需要对其进行高斯滤波。这样，经过滤波后在进行Hessian的计算，其公式如下：
-
-
-
-　　![img](pic/2012081723430758-1590031306811.jpg) 
-
-
-
-​     公式中的符号，估计有点数学基础的朋友都能够猜到，这里就不多解释了。
-
-
-
-​     最终我们要的是原图像的一个变换图像，因为我们要在这个变换图像上寻找特征点，然后将其位置反映射到原图中，例如在sift中，我们是在原图的DOG图上寻找特征点的。那么在surf中，这个变换图是什么呢？从surf的众多资料来看，就是原图每个像素的Hessian矩阵行列式的近似值构成的。其行列式近似公式如下：
-
-
-
-　　![img](pic/2012081723431985.jpg)    
-
-
-
-​     其中0.9是作者给出的一个经验值，其实它是有一套理论计算的，具体去看surf的英文论文。
-
-![4](pic/4.jpg)
+ 
 
  
 
- **一、Surf描述子形成步骤**
+　　　　**一、Surf描述子形成步骤**
 
 ​     **1. 构造高斯金字塔尺度空间**
 
 ​     其实surf构造的金字塔图像与sift有很大不同，就是因为这些不同才加快了其检测的速度。Sift采用的是DOG图像，而surf采用的是Hessian矩阵行列式近似值图像。首先来看看图像中某个像素点的Hessian矩阵，如下：
 
-　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723425550.jpg)    
+　　![img](pic/2012081723425550-1590032220819.jpg)    
 
 ​     即每一个像素点都可以求出一个Hessian矩阵。但是由于我们的特征点需要具备尺度无关性，所以在进行Hessian矩阵构造前，需要对其进行高斯滤波。这样，经过滤波后在进行Hessian的计算，其公式如下：
 
-　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723430758.jpg) 
+　　![img](pic/2012081723430758-1590032222559.jpg) 
 
 ​     公式中的符号，估计有点数学基础的朋友都能够猜到，这里就不多解释了。
 
 ​     最终我们要的是原图像的一个变换图像，因为我们要在这个变换图像上寻找特征点，然后将其位置反映射到原图中，例如在sift中，我们是在原图的DOG图上寻找特征点的。那么在surf中，这个变换图是什么呢？从surf的众多资料来看，就是原图每个像素的Hessian矩阵行列式的近似值构成的。其行列式近似公式如下：
 
-　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723431985.jpg)    
+　　![img](pic/2012081723431985-1590032220879.jpg)    
 
 ​     其中0.9是作者给出的一个经验值，其实它是有一套理论计算的，具体去看surf的英文论文。
 
 ​     由于求Hessian时要先高斯平滑，然后求二阶导数，这在离散的像素点是用模板卷积形成的，这2中操作合在一起用一个模板代替就可以了，比如说y方向上的模板如下：
 
-　　　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723434916.png)    
+　　　　![img](pic/2012081723434916.png)    
 
 ​     该图的左边即用高斯平滑然后在y方向上求二阶导数的模板，为了加快运算用了近似处理，其处理结果如右图所示，这样就简化了很多。并且右图可以采用积分图来运算，大大的加快了速度，关于积分图的介绍，可以去查阅相关的资料。
 
 ​     同理，x和y方向的二阶混合偏导模板如下所示：
 
-　　　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723440134.png)
+　　　　![img](pic/2012081723440134.png)
 
  
 
@@ -84,7 +54,7 @@ https://www.cnblogs.com/tornadomeet/archive/2012/08/17/2644903.html
 
 　　
 
-　　　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081800084982.jpg)
+　　　　![img](pic/2012081800084982.jpg)
 
  
 
@@ -104,7 +74,7 @@ https://www.cnblogs.com/tornadomeet/archive/2012/08/17/2644903.html
 
 　　这一步与sift也大有不同。Sift选取特征点主方向是采用在特征点领域内统计其梯度直方图，取直方图bin值最大的以及超过最大bin值80%的那些方向做为特征点的主方向。而在surf中，不统计其梯度直方图，而是统计特征点领域内的harr小波特征。即在特征点的领域(比如说，半径为6s的圆内，s为该点所在的尺度)内，统计60度扇形内所有点的水平haar小波特征和垂直haar小波特征总和，haar小波的尺寸变长为4s，这样一个扇形得到了一个值。然后60度扇形以一定间隔进行旋转，最后将最大值那个扇形的方向作为该特征点的主方向。该过程的示意图如下：
 
-　　　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723443495.jpg)
+　　　　![img](pic/2012081723443495.jpg)
 
  
 
@@ -114,7 +84,7 @@ https://www.cnblogs.com/tornadomeet/archive/2012/08/17/2644903.html
 
 　　在surf中，也是在特征点周围取一个正方形框，框的边长为20s(s是所检测到该特征点所在的尺度)。该框带方向，方向当然就是第4步检测出来的主方向了。然后把该框分为16个子区域，每个子区域统计25个像素的水平方向和垂直方向的haar小波特征，这里的水平和垂直方向都是相对主方向而言的。该haar小波特征为水平方向值之和，水平方向绝对值之和，垂直方向之和，垂直方向绝对值之和。该过程的示意图如下所示：
 
-　　　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723452328.png)
+　　　　![img](pic/2012081723452328.png)
 
  
 
@@ -148,13 +118,13 @@ https://www.cnblogs.com/tornadomeet/archive/2012/08/17/2644903.html
 
 　　打开软件，单击Open Image按钮，选择一张待检测的图片，效果如下：
 
-　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723475785.png)
+　　![img](pic/2012081723475785.png)
 
  
 
 　　单击Surf Detect按钮，程序会对该图片进行特征点检测，并显示特征结果，包括特征点的主方向，尺度等信息。效果如下：
 
-　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723481184.png)
+　　![img](pic/2012081723481184.png)
 
 　　单击Close 按钮退出程序。
 
@@ -164,19 +134,19 @@ https://www.cnblogs.com/tornadomeet/archive/2012/08/17/2644903.html
 
 　　打开软件，单击Open Image 按钮，依次打开2幅待匹配的图片，这2幅图片要有相同的内容，只是尺度，旋转，光照等不同。打开图片后如下：
 
-　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723482431.png)
+　　![img](pic/2012081723482431.png)
 
  
 
 　　单击Surf Detect按钮，和上面类似，会先对图片进行检测，效果如下：
 
-　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723483881.png)
+　　![img](pic/2012081723483881.png)
 
  
 
 　　单击Surf Match 按钮，程序会对检测到的图片进行特征点匹配，效果如下：
 
-　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723485134.png)
+　　![img](pic/2012081723485134.png)
 
 　　单击Close 按钮退出程序。
 
@@ -186,19 +156,19 @@ https://www.cnblogs.com/tornadomeet/archive/2012/08/17/2644903.html
 
 　　打开软件，单击Open Image 按钮，选择一张待特征点分类的图片，如下所示：
 
-　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723490662.png)
+　　![img](pic/2012081723490662.png)
 
  
 
 　　单击Surf Detect按钮，首先对该图片进行surf特征点检测，如下：
 
-　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723491956.png)
+　　![img](pic/2012081723491956.png)
 
  
 
 　　单击Kmeans Cluster按钮，程序会对这些特征点集合进行聚类，并显示其结果，如下所示：
 
-　　![img](https://pic002.cnblogs.com/images/2012/381513/2012081723493326.png)
+　　![img](pic/2012081723493326.png)
 
   单击Close 按钮退出程序。
 
@@ -208,9 +178,9 @@ https://www.cnblogs.com/tornadomeet/archive/2012/08/17/2644903.html
 
 ***opensurf.h:\***
 
-[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+[![复制代码](https:////common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
 
-```c++
+```
 #ifndef OPENSURF_H
 #define OPENSURF_H
 
@@ -260,15 +230,15 @@ private:
 #endif // OPENSURF_H
 ```
 
-[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+[![复制代码](https:////common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
 
  
 
 ***opensurf.cpp:***
 
-[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+[![复制代码](https:////common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
 
-```c++
+```
 #include "opensurf.h"
 #include "ui_opensurf.h"
 #include <QtGui>
@@ -419,7 +389,7 @@ void OpenSurf::on_closeButton_clicked()
 }
 ```
 
-[![复制代码](https://common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
+[![复制代码](https:////common.cnblogs.com/images/copycode.gif)](javascript:void(0);)
 
  
 
@@ -463,9 +433,4 @@ void OpenSurf::on_closeButton_clicked()
 
  
 
-作者：tornadomeet 出处：http://www.cnblogs.com/tornadomeet 欢迎转载或分享，但请务必声明文章出处。 （新浪微博：tornadomeet,欢迎交流！）
-
-分类: [OpenCV](https://www.cnblogs.com/tornadomeet/category/361466.html), [Qt](https://www.cnblogs.com/tornadomeet/category/374732.html)
-
-标签: [特征点检测学习](https://www.cnblogs.com/tornadomeet/tag/特征点检测学习/)
-
+作者：tornadomeet 出处：http://www.cnblogs.com/tornadomeet 欢迎转载或分享，但请务必声明文章出处。      （新浪微博：tornadomeet,欢迎交流！）
