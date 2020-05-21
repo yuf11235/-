@@ -44,7 +44,7 @@ https://www.cnblogs.com/tornadomeet/archive/2012/08/17/2644903.html
 
 ​     其中0.9是作者给出的一个经验值，其实它是有一套理论计算的，具体去看surf的英文论文。
 
-
+![4](pic/4.jpg)
 
  
 
